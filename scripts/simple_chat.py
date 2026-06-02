@@ -49,4 +49,5 @@ async def run_agent():
 
 if __name__ == "__main__":
     resp = asyncio.run(run_agent())
-    print(f"\nMessage History:\n{resp.message_history}")
+    if resp is not None:
+        print(f"\nMessage History:\n{resp.message_history}")
