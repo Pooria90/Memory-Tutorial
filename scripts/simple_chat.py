@@ -28,12 +28,12 @@ async def run_agent():
     msg_history = MessageHistory()
 
     while True:
-        msg_history.append(
-            UserMessage(user_msg)
-        )
         if user_msg.strip().lower() == "quit":
             print(_closer)
             break
+        msg_history.append(
+            UserMessage(user_msg)
+        )
         resp = await rt.call(SimpleAgent, msg_history)
         msg_history.append(
             AssistantMessage(resp.content)
