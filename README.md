@@ -1,0 +1,3 @@
+# Building Memory for AI Agents from Scratch
+ 
+This tutorial walks you through building a memory system for an AI agent incrementally, starting from a stateless agent and progressively adding more sophisticated memory capabilities. Since Railtracks does not natively support memory for agents, each stage shows you how to implement it yourself — from in-session conversation history, to persistent key-value storage, to semantic search across stored facts. By the end, you'll understand the core concepts behind agent memory, how to design memory tools that an LLM can call, and the tradeoffs between different memory strategies.
