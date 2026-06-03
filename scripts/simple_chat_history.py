@@ -25,13 +25,23 @@ Goodbye!
 _HISTORY_WINDOW = 20
 
 
+def _load_history(store: ConversationStore) -> MessageHistory:
+    history = MessageHistory()
+    for msg in store.last_n_messages(_HISTORY_WINDOW):
+        if msg.role == "user":
+            history.append(UserMessage(msg.content))
+        else:
+            history.append(AssistantMessage(msg.content))
+    return history
+
+
 async def run_agent():
     store = ConversationStore()
     session = store.new_session()
 
     user_msg: str = input(_opener)
     resp = None
-    msg_history = MessageHistory()
+    msg_history = _load_history(store)
 
     while True:
         if user_msg.strip().lower() == "quit":
