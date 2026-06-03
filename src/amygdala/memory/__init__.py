@@ -1,2 +1,4 @@
-from .schema import Session
-from .store import ConversationStore
+from .schema import Session, MemoryOperations
+from .store import ConversationStore, KeyValueStore
+
+__all__ = ["Session", "MemoryOperations", "ConversationStore", "KeyValueStore"]

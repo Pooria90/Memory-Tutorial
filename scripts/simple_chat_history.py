@@ -2,14 +2,10 @@ import asyncio
 import railtracks as rt
 
 from rich import print
-from railtracks.llm import (
-    MessageHistory,
-    UserMessage,
-    AssistantMessage
-)
+from railtracks.llm import MessageHistory, UserMessage, AssistantMessage
 
 from amygdala.agent import SimpleAgent
-from amygdala.memory import Session, ConversationStore
+from amygdala.memory import ConversationStore
 
 
 _opener = """
@@ -47,17 +43,13 @@ async def run_agent():
         if user_msg.strip().lower() == "quit":
             print(_closer)
             break
-        msg_history.append(
-            UserMessage(user_msg)
-        )
+        msg_history.append(UserMessage(user_msg))
 
         if store:
             store.add_message(session, UserMessage(user_msg))
 
         resp = await rt.call(SimpleAgent, msg_history)
-        msg_history.append(
-            AssistantMessage(resp.content)
-        )
+        msg_history.append(AssistantMessage(resp.content))
 
         if store:
             store.add_message(session, AssistantMessage(resp.content))
@@ -67,7 +59,6 @@ async def run_agent():
         user_msg = input("\nUser:\n")
 
     return resp
-
 
 
 if __name__ == "__main__":
