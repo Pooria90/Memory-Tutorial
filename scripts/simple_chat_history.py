@@ -22,7 +22,7 @@ _closer = """\nAssistant:
 Goodbye!
 """
 
-_HISTORY_WINDOW = 20
+_HISTORY_WINDOW = None
 
 
 def _load_history(store: ConversationStore) -> MessageHistory:

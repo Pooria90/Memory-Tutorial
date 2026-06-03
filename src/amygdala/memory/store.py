@@ -40,10 +40,10 @@ class ConversationStore:
     def all_sessions(self) -> list[Session]:
         return self._sessions
 
-    def last_n_messages(self, n: int) -> list[StoredMessage]:
+    def last_n_messages(self, n: int | None = None) -> list[StoredMessage]:
         all_messages = [
             msg
             for session in self._sessions
             for msg in session.messages
         ]
-        return all_messages[-n:]
+        return all_messages if n is None else all_messages[-n:]
