@@ -1,5 +1,8 @@
 from datetime import datetime, timezone
 from pydantic import BaseModel, Field
+from typing import Literal
+
+# ===== Data Models for Episodic Memory =====
 
 
 class StoredMessage(BaseModel):
@@ -13,3 +16,16 @@ class Session(BaseModel):
         default_factory=lambda: datetime.now(timezone.utc).isoformat()
     )
     messages: list[StoredMessage] = Field(default_factory=list)
+
+
+# ===== Data Models for Semantic Memory =====
+
+
+class MemoryOperation(BaseModel):
+    action: Literal["save", "delete"]
+    key: str
+    value: str
+
+
+class MemoryOperations(BaseModel):
+    operations: list[MemoryOperation]
