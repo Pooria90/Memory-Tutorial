@@ -103,16 +103,15 @@ class AmygdalaVectorStore:
     
     def _convert_str_to_entry(self, content: str):
         vector = self._extract_embedding(content)
-        chunk = Chunk(
+        _id = uuid4()
+        entry = StoreEntry(
             content=content,
-            document_id=uuid4()
-        )
-        echunk = EmbeddedChunk(
-            chunk=chunk,
             vector=vector,
+            id=_id,
+            chunk_id=_id,
+            document_id=_id,
             embedding_model=self.model
         )
-        entry = StoreEntry.from_chunk(embedded_chunk=echunk)
         return entry
     
     def _convert_str_to_query(self, content: str):
