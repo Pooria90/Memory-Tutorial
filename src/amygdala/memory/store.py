@@ -1,7 +1,5 @@
 import json
-import asyncio
 
-from typing import Any
 from uuid import uuid4
 from pathlib import Path
 
@@ -89,22 +87,21 @@ class KeyValueStore:
 # ===== Vector Store =====
 
 class AmygdalaVectorStore:
-    def __init__(self, embedding_model="text-embedding-3-small") -> None:
-        self.vs = self._create_vector_store()
+    def __init__(self, vs: VectorStore, embedding_model: str = "text-embedding-3-small") -> None:
         self.model = embedding_model
-        self.embedder = OpenAIEmbedding(model=self.model)
+        self.embedder = OpenAIEmbedding(model=embedding_model)
+        self.vs = vs
+
+    @classmethod
+    async def create(cls, embedding_model: str = "text-embedding-3-small") -> "AmygdalaVectorStore":
+        backend = await ChromaBackend.create("amygdala_db", path=str(_VS_PATH))
+        return cls(VectorStore(backend), embedding_model)
 
     # ===== Internal tools
-    def _create_vector_store(self):
-        backend = asyncio.run(
-            ChromaBackend.create("amygdala_db", path=str(_VS_PATH))
-        )
-        return VectorStore(backend)
-    
     def _convert_str_to_entry(self, content: str):
         vector = self._extract_embedding(content)
         _id = uuid4()
-        entry = StoreEntry(
+        return StoreEntry(
             content=content,
             vector=vector,
             id=_id,
@@ -112,30 +109,27 @@ class AmygdalaVectorStore:
             document_id=_id,
             embedding_model=self.model
         )
-        return entry
-    
-    def _convert_str_to_query(self, content: str):
+
+    def _convert_str_to_query(self, content: str, top_k: int = 3):
         return StoreQuery(
             text=content,
             embedding=self._extract_embedding(content),
-            top_k=3
+            top_k=top_k
         )
 
     def _extract_embedding(self, content: str):
         embeddings = self.embedder.embed([content])
         return embeddings.vectors[0]
-    
+
     # ===== Public API
-    def record(self, content: str) -> None:
+    async def record(self, content: str) -> None:
         entry = self._convert_str_to_entry(content=content)
-        asyncio.run(self.vs.write(entry))
-        return
-    
-    def ask(self, content: str) -> list[str]:
-        query = self._convert_str_to_query(content=content)
-        results = asyncio.run(self.vs.read(query))
-        texts = [r.entry.content for r in results]
-        return texts
+        await self.vs.write(entry)
+
+    async def ask(self, content: str, top_k: int = 3) -> list[str]:
+        query = self._convert_str_to_query(content=content, top_k=top_k)
+        results = await self.vs.read(query)
+        return [r.entry.content for r in results]
 
 
 #TODO: Build one purely based on Chroma
