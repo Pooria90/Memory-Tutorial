@@ -1,4 +1,4 @@
-from .schema import Session, MemoryOperations
+from .schema import Session, MemoryOperations, ExtractedFacts
 from .store import ConversationStore, KeyValueStore, AmygdalaVectorStore
 
-__all__ = ["Session", "MemoryOperations", "ConversationStore", "KeyValueStore", "AmygdalaVectorStore"]
+__all__ = ["Session", "MemoryOperations", "ExtractedFacts", "ConversationStore", "KeyValueStore", "AmygdalaVectorStore"]

@@ -1,3 +1,3 @@
-from .agents import SimpleAgent, KeyValueAgent
+from .agents import SimpleAgent, KeyValueAgent, VectorMemoryAgent
 
-__all__ = ["SimpleAgent", "KeyValueAgent"]
+__all__ = ["SimpleAgent", "KeyValueAgent", "VectorMemoryAgent"]

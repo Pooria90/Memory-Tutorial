@@ -2,8 +2,8 @@ from datetime import datetime, timezone
 from pydantic import BaseModel, Field
 from typing import Literal
 
-# ===== Data Models for Episodic Memory =====
 
+# ===== Data Models for Episodic Memory =====
 
 class StoredMessage(BaseModel):
     role: str
@@ -20,7 +20,6 @@ class Session(BaseModel):
 
 # ===== Data Models for Semantic Memory =====
 
-
 class MemoryOperation(BaseModel):
     action: Literal["save", "delete"]
     key: str
@@ -29,3 +28,9 @@ class MemoryOperation(BaseModel):
 
 class MemoryOperations(BaseModel):
     operations: list[MemoryOperation]
+
+
+# ===== Data Models for Vector Memory =====
+
+class ExtractedFacts(BaseModel):
+    facts: list[str] = Field(default_factory=list)

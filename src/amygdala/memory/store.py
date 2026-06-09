@@ -98,8 +98,8 @@ class AmygdalaVectorStore:
         return cls(VectorStore(backend), embedding_model)
 
     # ===== Internal tools
-    def _convert_str_to_entry(self, content: str):
-        vector = self._extract_embedding(content)
+    async def _convert_str_to_entry(self, content: str):
+        vector = await self._extract_embedding(content)
         _id = uuid4()
         return StoreEntry(
             content=content,
@@ -110,24 +110,24 @@ class AmygdalaVectorStore:
             embedding_model=self.model
         )
 
-    def _convert_str_to_query(self, content: str, top_k: int = 3):
+    async def _convert_str_to_query(self, content: str, top_k: int = 3):
         return StoreQuery(
             text=content,
-            embedding=self._extract_embedding(content),
+            embedding=await self._extract_embedding(content),
             top_k=top_k
         )
 
-    def _extract_embedding(self, content: str):
-        embeddings = self.embedder.embed([content])
+    async def _extract_embedding(self, content: str):
+        embeddings = await self.embedder.aembed([content])
         return embeddings.vectors[0]
 
     # ===== Public API
     async def record(self, content: str) -> None:
-        entry = self._convert_str_to_entry(content=content)
+        entry = await self._convert_str_to_entry(content=content)
         await self.vs.write(entry)
 
     async def ask(self, content: str, top_k: int = 3) -> list[str]:
-        query = self._convert_str_to_query(content=content, top_k=top_k)
+        query = await self._convert_str_to_query(content=content, top_k=top_k)
         results = await self.vs.read(query)
         return [r.entry.content for r in results]
 
