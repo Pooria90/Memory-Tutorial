@@ -5,6 +5,7 @@ from typing import Literal
 
 # ===== Data Models for Episodic Memory =====
 
+
 class StoredMessage(BaseModel):
     role: str
     content: str
@@ -20,6 +21,7 @@ class Session(BaseModel):
 
 # ===== Data Models for Semantic Memory =====
 
+
 class MemoryOperation(BaseModel):
     action: Literal["save", "delete"]
     key: str
@@ -31,6 +33,7 @@ class MemoryOperations(BaseModel):
 
 
 # ===== Data Models for Vector Memory =====
+
 
 class ExtractedFacts(BaseModel):
     facts: list[str] = Field(default_factory=list)

@@ -5,8 +5,12 @@ from pathlib import Path
 
 from railtracks.llm import Message
 from railtracks.retrieval.embedding import OpenAIEmbedding
-from railtracks.retrieval import Chunk, EmbeddedChunk
-from railtracks.retrieval.stores import VectorStore, ChromaBackend, StoreEntry, StoreQuery
+from railtracks.retrieval.stores import (
+    VectorStore,
+    ChromaBackend,
+    StoreEntry,
+    StoreQuery,
+)
 
 from .schema import Session, StoredMessage, MemoryOperations
 
@@ -17,6 +21,7 @@ _VS_PATH = Path("records/memory")
 
 
 # ===== Conversation Store =====
+
 
 class ConversationStore:
     def __init__(self, path: Path = _CONV_PATH):
@@ -57,6 +62,7 @@ class ConversationStore:
 
 # ===== Key-Value Store =====
 
+
 class KeyValueStore:
     def __init__(self, path: Path = _KV_PATH) -> None:
         self.path = path
@@ -86,14 +92,19 @@ class KeyValueStore:
 
 # ===== Vector Store =====
 
+
 class AmygdalaVectorStore:
-    def __init__(self, vs: VectorStore, embedding_model: str = "text-embedding-3-small") -> None:
+    def __init__(
+        self, vs: VectorStore, embedding_model: str = "text-embedding-3-small"
+    ) -> None:
         self.model = embedding_model
         self.embedder = OpenAIEmbedding(model=embedding_model)
         self.vs = vs
 
     @classmethod
-    async def create(cls, embedding_model: str = "text-embedding-3-small") -> "AmygdalaVectorStore":
+    async def create(
+        cls, embedding_model: str = "text-embedding-3-small"
+    ) -> "AmygdalaVectorStore":
         backend = await ChromaBackend.create("amygdala_db", path=str(_VS_PATH))
         return cls(VectorStore(backend), embedding_model)
 
@@ -107,14 +118,12 @@ class AmygdalaVectorStore:
             id=_id,
             chunk_id=_id,
             document_id=_id,
-            embedding_model=self.model
+            embedding_model=self.model,
         )
 
     async def _convert_str_to_query(self, content: str, top_k: int = 3):
         return StoreQuery(
-            text=content,
-            embedding=await self._extract_embedding(content),
-            top_k=top_k
+            text=content, embedding=await self._extract_embedding(content), top_k=top_k
         )
 
     async def _extract_embedding(self, content: str):
@@ -130,6 +139,3 @@ class AmygdalaVectorStore:
         query = await self._convert_str_to_query(content=content, top_k=top_k)
         results = await self.vs.read(query)
         return [r.entry.content for r in results]
-
-
-#TODO: Build one purely based on Chroma

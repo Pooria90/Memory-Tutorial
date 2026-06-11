@@ -64,7 +64,9 @@ async def run_agent():
         if recalled:
             print(f"\n[dim][Recalled {len(recalled)} fact(s): {recalled}][/dim]")
         if facts_resp.structured.facts:
-            print(f"[dim][Stored {len(facts_resp.structured.facts)} new fact(s): {facts_resp.structured.facts}][/dim]")
+            print(
+                f"[dim][Stored {len(facts_resp.structured.facts)} new fact(s): {facts_resp.structured.facts}][/dim]"
+            )
 
         user_msg = input("\nUser:\n")
 
