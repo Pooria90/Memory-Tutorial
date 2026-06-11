@@ -1,6 +1,12 @@
 import railtracks as rt
 
-from .messages import SIMPLE_SYSTEM_PROMPT, KEY_VALUE_SYSTEM_PROMPT, VECTOR_MEMORY_SYSTEM_PROMPT
+from .messages import (
+    SIMPLE_SYSTEM_PROMPT,
+    KEY_VALUE_SYSTEM_PROMPT,
+    VECTOR_MEMORY_SYSTEM_PROMPT,
+    AGENTIC_MEMORY_SYSTEM_PROMPT,
+)
+from .tools import save_memory, recall_memories
 from ..memory.schema import MemoryOperations, ExtractedFacts
 
 _main_llm = rt.llm.AnthropicLLM("claude-sonnet-4-6")
@@ -31,4 +37,14 @@ VectorMemoryAgent = rt.agent_node(
     llm=_memory_llm,
     system_message=VECTOR_MEMORY_SYSTEM_PROMPT,
     output_schema=ExtractedFacts,
+)
+
+
+# ===== Agentic Memory =====
+
+AgenticMemoryAgent = rt.agent_node(
+    name="Agentic-Memory-Agent",
+    llm=_main_llm,
+    system_message=AGENTIC_MEMORY_SYSTEM_PROMPT,
+    tool_nodes=[save_memory, recall_memories],
 )
